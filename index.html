@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Fight!</title>
+        <link rel="stylesheet" href="assets/styles.css">
+    </head>
+    <body>
+        <div id="game-container">
+            <div id="stats-container">
+                <div id="player1-stats-container" class="player-stats-container">
+                    <div id="player1-name" class="player-name">Player 1</div>
+                    <div id="player1-health" class="player-health">
+                        <div id="player1-health-inner" class="player-health-inner"></div>
+                    </div>
+                </div>
+                <div id="timer"></div>
+                <div id="player2-stats-container" class="player-stats-container">
+                    <div id="player2-name" class="player-name">Player 2</div>
+                    <div id="player2-health" class="player-health">
+                        <div id="player2-health-inner" class="player-health-inner"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="menu-container">
+                <div id="winner-name-container">Winner: <div id="winner-name"></div></div>
+                <button id="start-over" onclick="location.reload()">Start Over</button>
+            </div>
+            <canvas></canvas>
+        </div>
+        
+        <script  src="js/Util.js"></script>
+        <script src="index.js"></script>
+    </body>
+</html>
