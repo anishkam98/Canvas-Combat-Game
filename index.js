@@ -7,99 +7,123 @@ canvas.height = 576;
 context.fillRect(0, 0, canvas.width, canvas.height);
 
 const GRAVITY = 0.7;
-const TIME_LIMIT = 5;
+const TIME_LIMIT = 180;
 const util = new Util();
 
-class Sprite {
-    constructor({ position, velocity , color, offset }) {
-        this.position = position;
-        this.velocity = velocity;
-        this.height = 150;
-        this.width = 50;
-        this.health = 100;
-        this.attackBox = {
-            position: {
-                x: this.position.x,
-                y: this.position.y
-            },
-            offset,
-            width: 100,
-            height: 50
-        }
-        this.color = color;
-        this.isAttacking;
-        this.lastKeyX;
-    }
+const background = new Sprite({
+    position: {
+        x: 0,
+        y: 0
+    },
+    imageSource: './assets/images/Summer7.png',
+    isBackground: true
+})
 
-    draw() {
-        context.fillStyle = this.color;
-        context.fillRect(this.position.x, this.position.y, this.width, this.height);
-    
-        // Attack box
-        if(this.isAttacking) {
-            context.fillStyle = 'green';
-            context.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
-        }    
-    }
-
-    move() {
-
-    }
-
-    attack() {
-        this.isAttacking = true;
-        setTimeout(() => {
-            this.isAttacking = false;
-        }, 100)
-    }
-
-    update() {
-        this.draw();
-        
-        this.position.x += this.velocity.x;
-        this.position.y += this.velocity.y;
-        
-        this.attackBox.position.x = this.position.x + this.attackBox.offset.x;
-        this.attackBox.position.y = this.position.y + 40;
-
-        if (this.position.y + this.height + this.velocity.y >= canvas.height) {
-            this.velocity.y = 0;
-        }
-        else {
-            this.velocity.y += GRAVITY;
-        }
-    }
-}
-
-const player = new Sprite({
+const player = new Fighter({
     position: {
         x: 256,
         y: 0
     },
+    direction: 1,
     velocity: {
         x: 0,
         y: 0
     },
     color: 'red',
     offset: {
+        x: 41,
+        y: 45
+    },
+    attackboxOffset: {
         x: 0,
-        y: 0
+        y: 30
+    },
+    scale: 1,
+    imageSource: './assets/images/Samurai/Idle.png',
+    framesMax: 6,
+    sprites: {
+        idle: {
+            imageSource: './assets/images/Samurai/Idle.png',
+            framesMax: 6,
+        },
+        run: {
+            imageSource: './assets/images/Samurai/Run.png',
+            framesMax: 8,
+        },
+        jump: {
+            imageSource: './assets/images/Samurai/Jump.png',
+            framesMax: 12,
+        },
+        attack1: {
+            imageSource: './assets/images/Samurai/Attack_1.png',
+            framesMax: 6,
+        },
+        attack2: {
+            imageSource: './assets/images/Samurai/Attack_2.png',
+            framesMax: 4,
+        },
+        hurt: {
+            imageSource: './assets/images/Samurai/Hurt.png',
+            framesMax: 2,
+        },
+        death: {
+            imageSource: './assets/images/Samurai/Dead.png',
+            framesMax: 3,
+        }
     }
 })
 
-const player2 = new Sprite({
+const player2 = new Fighter({
     position: {
         x: 512,
         y: 100
     },
+    direction: -1,
     velocity: {
         x: 0,
         y: 0
     },
     color: 'blue',
     offset: {
-        x: -50,
-        y: 0
+        x: 41,
+        y: 45
+    },
+    attackboxOffset: {
+        x: 0,
+        y: 30
+    },
+    scale: 1,
+    imageSource: './assets/images/Fighter/Idle.png',
+    framesMax: 6,
+    sprites: {
+        idle: {
+            imageSource: './assets/images/Fighter/Idle.png',
+            framesMax: 6,
+        },
+        run: {
+            imageSource: './assets/images/Fighter/Run.png',
+            framesMax: 8,
+        },
+        jump: {
+            imageSource: './assets/images/Fighter/Jump.png',
+            framesMax: 10,
+        },
+        attack1: {
+            imageSource: './assets/images/Fighter/Attack_1.png',
+            framesMax: 4,
+        },
+        attack2: {
+            imageSource: './assets/images/Fighter/Attack_2.png',
+            framesMax: 3,
+        },
+        hurt: {
+            imageSource: './assets/images/Fighter/Hurt.png',
+            framesMax: 3,
+        },
+        death: {
+            imageSource: './assets/images/Fighter/Dead.png',
+            framesMax: 3,
+        }
     }
 })
 
@@ -134,41 +158,59 @@ function animate() {
     window.requestAnimationFrame(animate);
     context.fillStyle = 'black';
     context.fillRect(0, 0, canvas.width, canvas.height);
+    background.update();
     player.update();
     player2.update();
+    if(!util.isGameRunning) {
+        return;
+    }
 
     // Player movement
     player.velocity.x = 0;
+    
     if(keys.a.pressed && player.lastKeyX === 'a') {
+        player.direction = -1;
         player.velocity.x = -5;
+        player.switchSprite('run')
     }
     else if(keys.d.pressed && player.lastKeyX === 'd') {
+        player.direction = 1;
         player.velocity.x = 5;
+        player.switchSprite('run')
+    }
+    else {
+        player.switchSprite('idle')
+    }
+    
+
+    // Detect collision from player 
+    if(util.isAttackCollision({ object1: player, object2: player2 }) &&
+        player.isAttacking) {
+        player2.getHurt();
+        document.querySelector('#player2-health-inner').style.width =  String(player2.health) + '%';
+        player.isAttacking = false;
     }
 
     // player2 movement
     player2.velocity.x = 0;
     if(keys.ArrowLeft.pressed && player2.lastKeyX === 'ArrowLeft') {
+        player2.direction = -1;
         player2.velocity.x = -5;
+        player2.switchSprite('run')
     }
     else if(keys.ArrowRight.pressed && player2.lastKeyX === 'ArrowRight') {
+        player2.direction = 1;
         player2.velocity.x = 5;
+        player2.switchSprite('run')
     }
-
-    // Detect collision from player 
-    if(util.isAttackCollision({ object1: player, object2: player2 }) &&
-        player.isAttacking) {
-        console.log('attack from player1')
-        player2.health += -5;
-        document.querySelector('#player2-health-inner').style.width =  String(player2.health) + '%';
-        player.isAttacking = false;
+    else {
+        player2.switchSprite('idle')
     }
 
      // Detect collision from player2 
     if(util.isAttackCollision({ object1: player2, object2: player }) &&
         player2.isAttacking) {
-        console.log('attack from player2')
-        player.health += -5;
+        player.getHurt();
         document.querySelector('#player1-health-inner').style.width =  String(player.health) + '%';
         player2.isAttacking = false;
     }
@@ -189,7 +231,7 @@ window.addEventListener('keydown', (event) => {
             break;
         case 'w':
             keys.w.pressed = true;
-            player.velocity.y = -15;
+            player.jump();
             break;
         case 'e':
             keys.e.pressed = true;
@@ -205,7 +247,7 @@ window.addEventListener('keydown', (event) => {
             break;
         case 'ArrowUp':
             keys.ArrowUp.pressed = true;
-            player2.velocity.y = -15;
+            player2.jump();
             break;
         case '/':
             keys.slash.pressed = true;

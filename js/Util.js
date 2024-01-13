@@ -1,19 +1,34 @@
 class Util {
+    isGameRunning = false;
+
     isAttackCollision({ object1, object2 }) {
-        return object1.attackBox.position.x + object1.attackBox.width >= object2.position.x &&
-        object2.position.x + object2.width >= object1.attackBox.position.x + object1.attackBox.width &&
-        object1.attackBox.position.y + object1.attackBox.height >= object2.position.y &&
-        object2.position.y + object2.height >= object1.attackBox.position.y + object1.attackBox.height
+        return this.isHorizontalCollision({ object1, object2 }) && this.isVerticalCollision({ object1, object2 });
+    }
+
+    isVerticalCollision({ object1, object2 }) {
+        return object1.attackBox.position.y + object1.attackBox.height >= object2.position.y &&
+        object2.position.y + object2.height >= object1.attackBox.position.y + object1.attackBox.height;
+    }
+
+    isHorizontalCollision({ object1, object2 }) {
+        return (object1.direction > 0 && 
+        object1.attackBox.position.x + object1.attackBox.width >= object2.position.x &&
+        object2.position.x + object2.width >= object1.attackBox.position.x) || 
+        (object1.direction < 0 && 
+            object1.position.x - object1.attackBox.width <= object2.position.x + object2.width  &&
+            object2.position.x <= object1.position.x);
     }
     
     startGame(player, player2, timeLimit) {
         document.querySelector('#timer').textContent = String(timeLimit);
         let currentTime = parseInt(document.querySelector('#timer').textContent);
+        this.isGameRunning = true;
     
         const interval = setInterval(() => {
             currentTime--;
             document.querySelector('#timer').textContent =  String(currentTime);
             if(currentTime === 0) {
+                this.isGameRunning = false;
                 clearInterval(interval);
                 this.determineWinner({player, player2});
             }
@@ -21,15 +36,26 @@ class Util {
     }
 
     determineWinner({ player, player2 }) {
+        this.stopPlayers({ player, player2 });
+        let winner;
         document.querySelector('#menu-container').style.display = 'flex';
+
         if(player.health === player2.health) {
-            document.querySelector('#winner-name').textContent = 'Tie';
+            winner = 'Tie';
         }
         else if(player.health > player2.health) {
-            document.querySelector('#winner-name').textContent = 'Player 1';
+            winner = 'Player 1';
         }
         else if(player.health < player2.health) {
-            document.querySelector('#winner-name').textContent = 'Player 2';
+            winner = 'Player 2';
         }
+        document.querySelector('#winner-name').textContent = winner;
+    }
+
+    stopPlayers({ player, player2 }) {
+        player.velocity.x = 0;
+        player.velocity.y = 0;
+        player2.velocity.x = 0;
+        player2.velocity.y = 0;
     }
 }
