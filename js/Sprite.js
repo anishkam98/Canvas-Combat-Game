@@ -50,7 +50,7 @@ class Sprite {
                     0,
                     this.image.width / this.framesMax,
                     this.image.height,
-                    -(this.position.x - this.offset.x),
+                    -this.position.x - this.offset.x,
                     this.position.y - this.offset.y,
                     (this.image.width / this.framesMax) * this.scale,
                     this.image.height * this.scale
@@ -97,7 +97,7 @@ class Fighter extends Sprite {
                 x: attackboxOffset.x,
                 y: attackboxOffset.y
             },
-            width: 100,
+            width: 50,
             height: 80
         }
         this.color = color;
