@@ -1,5 +1,6 @@
 class Util {
     isGameRunning = false;
+    interal;
 
     isAttackCollision({ object1, object2 }) {
         return this.isHorizontalCollision({ object1, object2 }) && this.isVerticalCollision({ object1, object2 });
@@ -24,18 +25,18 @@ class Util {
         let currentTime = parseInt(document.querySelector('#timer').textContent);
         this.isGameRunning = true;
     
-        const interval = setInterval(() => {
+        this.interval = setInterval(() => {
             currentTime--;
             document.querySelector('#timer').textContent =  String(currentTime);
             if(currentTime === 0) {
-                this.isGameRunning = false;
-                clearInterval(interval);
                 this.determineWinner({player, player2});
             }
         }, 1000);
     }
 
     determineWinner({ player, player2 }) {
+        this.isGameRunning = false;
+        clearInterval(this.interval);
         this.stopPlayers({ player, player2 });
         let winner;
         document.querySelector('#menu-container').style.display = 'flex';
