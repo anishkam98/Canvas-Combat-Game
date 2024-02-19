@@ -1,6 +1,6 @@
 class Util {
     isGameRunning = false;
-    interal;
+    interval;
 
     isAttackCollision({ object1, object2 }) {
         return this.isHorizontalCollision({ object1, object2 }) && this.isVerticalCollision({ object1, object2 });
