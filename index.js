@@ -8,17 +8,9 @@ context.fillRect(0, 0, canvas.width, canvas.height);
 
 const GRAVITY = 0.1;
 const FRAME_RATE = 1000/60;
-const TIME_LIMIT = 30;
 const util = new Util();
 
-const background = new Sprite({
-    position: {
-        x: 0,
-        y: 0
-    },
-    imageSource: './assets/images/Summer7.png',
-    isBackground: true
-})
+let background;
 
 const player = new Fighter({
     position: {
@@ -33,7 +25,7 @@ const player = new Fighter({
     speed: 2,
     offset: {
         x: 41,
-        y: 45
+        y: 20
     },
     attackboxOffset: {
         x: 0,
@@ -91,7 +83,7 @@ const player2 = new Fighter({
     speed: 2,
     offset: {
         x: 41,
-        y: 45
+        y: 20
     },
     attackboxOffset: {
         x: 0,
@@ -185,9 +177,12 @@ function animate(time){
     lastFrame = currentFrame;
     requestAnimationFrame(animate);
 
-    context.fillStyle = 'black';
+    context.fillStyle = 'green';
     context.fillRect(0, 0, canvas.width, canvas.height);
-    background.update();
+    if(background) {
+        background.update();
+    }
+    
     player.update();
     player2.update();
     if(!util.isGameRunning) {
@@ -253,10 +248,6 @@ function animate(time){
         player2.isAttacking = false;
     }
 }
-requestAnimationFrame(animate);
-
-animate();
-util.startGame(player, player2, TIME_LIMIT);
 
 window.addEventListener('keydown', (event) => {
     switch(event.key) {
