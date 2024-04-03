@@ -18,6 +18,10 @@
                     <div id="player1-health" class="player-health">
                         <div id="player1-health-inner" class="player-health-inner"></div>
                     </div>
+                    <div id="player1-wins-container" class="player-wins-container">
+                        <img id="player1-win-1" class="fist-wins" src="assets/images/fist-icon.png" alt="Player 1 Win 1 Fist Icon" />
+                        <img id="player1-win-2" class="fist-wins" src="assets/images/fist-icon.png" alt="Player 1 Win 2 Fist Icon" />
+                    </div>
                 </div>
                 <div id="timer">0</div>
                 <div id="player2-stats-container" class="player-stats-container">
@@ -25,15 +29,150 @@
                     <div id="player2-health" class="player-health">
                         <div id="player2-health-inner" class="player-health-inner"></div>
                     </div>
+                    <div id="player2-wins-container" class="player-wins-container">
+                        <img id="player2-win-1" class="fist-wins" src="assets/images/fist-icon.png" alt="Player 2 Win 1 Fist Icon" />
+                        <img id="player2-win-2" class="fist-wins" src="assets/images/fist-icon.png" alt="Player 2 Win 2 Fist Icon" />
+                    </div>
                 </div>
             </div>
             <div id="menu-container">
-                <div id="winner-name-container">Winner: <div id="winner-name"></div></div>
-                <button id="start-over" onclick="location.reload()">Start Over</button>
+                <div id="error-message"></div>
+                <div id="start-menu">
+                    <div class="slideshow-container">
+
+                        <div class="mySlides fade">
+                          <div class="numbertext">1 / 8</div>
+                          <img src="assets/images/game-map-backgrounds/Summer1.png" style="width:100%" class="map-image">
+                          <div class="text">Scene 1</div>
+                        </div>
+                        
+                        <div class="mySlides fade">
+                          <div class="numbertext">2 / 8</div>
+                          <img src="assets/images/game-map-backgrounds/Summer2.png" style="width:100%" class="map-image">
+                          <div class="text">Scene 2</div>
+                        </div>
+                        
+                        <div class="mySlides fade">
+                          <div class="numbertext">3 / 8</div>
+                          <img src="assets/images/game-map-backgrounds/Summer3.png" style="width:100%" class="map-image">
+                          <div class="text">Scene 3</div>
+                        </div>
+
+                        <div class="mySlides fade">
+                            <div class="numbertext">4 / 8</div>
+                            <img src="assets/images/game-map-backgrounds/Summer4.png" style="width:100%" class="map-image">
+                            <div class="text">Scene 4</div>
+                          </div>
+                          
+                          <div class="mySlides fade">
+                            <div class="numbertext">5 / 8</div>
+                            <img src="assets/images/game-map-backgrounds/Summer5.png" style="width:100%" class="map-image">
+                            <div class="text">Scene 5</div>
+                          </div>
+                          
+                          <div class="mySlides fade">
+                            <div class="numbertext">6 / 8</div>
+                            <img src="assets/images/game-map-backgrounds/Summer6.png" style="width:100%" class="map-image">
+                            <div class="text">Scene 6</div>
+                          </div>
+
+                          <div class="mySlides fade">
+                            <div class="numbertext">7 / 8</div>
+                            <img src="assets/images/game-map-backgrounds/Summer7.png" style="width:100%" class="map-image">
+                            <div class="text">Scene 7</div>
+                          </div>
+                          
+                          <div class="mySlides fade">
+                            <div class="numbertext">8 / 8</div>
+                            <img src="assets/images/game-map-backgrounds/Summer8.png" style="width:100%" class="map-image">
+                            <div class="text">Scene 8</div>
+                          </div>
+                        
+                        <div id="arrow-container">
+                            <a class="prev" onclick="plusSlides(-1)">❮</a>
+                            <a class="next" onclick="plusSlides(1)">❯</a>
+                        </div>
+                        
+                        
+                    </div>
+                    <div id="time-limit-container">
+                        <label for="time-limit">Time Limit</label>
+                        <input id="time-limit" type="number" min="30" max="120" value="60"/>
+                    </div>
+                    <div id="menu-buttons-container">
+                        <button id="start-game" class="menu-buttons" onclick="setTime()">Start</button>
+                    </div>
+                </div>
+                <div id="next-round-menu">
+                    <div id="round-winner-name-container" class="winner-name-containers">Winner: 
+                        <div id="round-winner-name"></div>
+                    </div>
+                    <div id="menu-buttons-container">
+                        <button id="next-round" class="menu-buttons" onclick="startNextRound()">Next Round</button>
+                        <button id="start-over" class="menu-buttons"  onclick="location.reload()">Quit</button>
+                    </div>
+                </div>
+                <div id="game-over-menu">
+                    <div id="game-winner-name-container" class="winner-name-containers">Winner: 
+                        <div id="game-winner-name"></div>
+                    </div>
+                    <div id="menu-buttons-container">
+                        <button id="start-over" class="menu-buttons"  onclick="location.reload()">Quit</button>
+                    </div>
+                </div>
             </div>
             <canvas></canvas>
         </div>
-        
+        <script>
+
+            /* Start Menu */
+
+            /* Map Picker */
+            let slideIndex = 1;
+            showSlides(slideIndex);
+
+            function plusSlides(n) {
+                showSlides(slideIndex += n);
+            }
+
+            function currentSlide(n) {
+                showSlides(slideIndex = n);
+            }
+
+            function showSlides(n) {
+                let i;
+                let slides = document.getElementsByClassName("mySlides");
+                let dots = document.getElementsByClassName("dot");
+                if (n > slides.length) {slideIndex = 1}    
+                if (n < 1) {slideIndex = slides.length}
+                for (i = 0; i < slides.length; i++) {
+                    slides[i].style.display = "none";  
+                }
+
+                slides[slideIndex-1].style.display = "block"; 
+            }
+
+            
+
+            /* Game Time Selection */
+            function setTime() {
+                document.querySelector('#error-message').textContent = '';
+                let time = document.querySelector('#time-limit').value;
+
+                if(!time || time < 30 || time > 120) {
+                    document.querySelector('#error-message').textContent = 'Please select a time between 30 and 120 seconds';
+                } 
+                else {
+                    util.startGame(player, player2, time, slideIndex);
+                }
+            }
+
+            /* Next Round Menu */
+
+            function startNextRound() {
+                util.startNextRound();
+            }
+        </script>
         <script  src="js/Util.js"></script>
         <script  src="js/Sprite.js"></script>
         <script src="index.js"></script>
